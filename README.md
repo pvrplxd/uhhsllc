@@ -38,6 +38,26 @@ Pushed the compiled static directory to a Git repository, establishing a continu
 
 ---
 
+## 🧩 Static Export Runtime Notes (Vercel)
+
+This repository is deployed as a **pure static export**. WordPress/PHP runtime APIs are intentionally not required at deploy time.
+
+- Internal links and assets should resolve with site-relative paths (for example `/wp-content/...`).
+- WordPress-only runtime endpoints (`/wp-json/*`, `admin-ajax.php`) are neutralized in exported pages.
+- Delayed script tags from optimization plugins are converted to normal script loading so dependencies initialize deterministically.
+- Elementor/Swiper lazy carousel images are shipped with direct `src` values and native `loading="lazy"`.
+- A static fallback script is loaded from `/wp-content/static/static-runtime.js` to hydrate any remaining lazy image markup and prevent spinner lockups.
+
+### Quick Verification Checklist
+
+1. Deploy to Vercel and hard-refresh (`Disable cache`) in browser DevTools.
+2. Confirm there are no requests to legacy hosts (such as `uhhsllc.local` or `*.freedev.app`).
+3. Confirm no page emits requests to `/wp-json/*` or `admin-ajax.php`.
+4. Confirm carousel images render immediately without persistent loading spinners.
+5. Open a few local asset URLs directly (e.g. `/wp-content/uploads/...`, `/wp-content/plugins/.../webfonts/...`) and verify they return `200`.
+
+---
+
 ## 🤝 Project Credits
 
 * **🎨 WordPress Design & Development:** [Saad Bin Haroon](https://linktr.ee/coollsaaad) 
